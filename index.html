@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página com Botões</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            gap: 10vw;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.6s;
+        }
+
+        .btnsim {
+            background-color: #000000;
+            color: white;
+        }
+
+        .btnsim:hover {
+            background-color: #25aa2b;
+        }
+
+        .btnnao {
+            background-color: #000000;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="titulo">VOCÊ ME AMA???</div>
+    <div class="container">
+        <button class="btnsim">SIM</button>
+        <button class="btnnao">NÃO</button>
+    </div>
+</body>
+<script>
+    document.querySelector('.btnsim').addEventListener('click', () => {window.alert('aaaaaaaaaaaaaaaaaaa')})
+    const botao = document.querySelector(".btnnao");
+
+    botao.addEventListener("mouseenter", () => {
+        // Obtém a posição atual do botão
+        const rect = botao.getBoundingClientRect();
+
+        // Define a distância máxima que o botão pode se mover
+        const deslocamentoMaximo = 150; // Pode ajustar esse valor
+
+        // Gera deslocamentos aleatórios dentro do limite definido
+        let deltaX = (Math.random() * (deslocamentoMaximo * 2)) - deslocamentoMaximo;
+        let deltaY = (Math.random() * (deslocamentoMaximo * 2)) - deslocamentoMaximo;
+
+        // Calcula nova posição dentro da tela, evitando que saia completamente
+        let newX = Math.min(window.innerWidth - rect.width, Math.max(0, rect.left + deltaX));
+        let newY = Math.min(window.innerHeight - rect.height, Math.max(0, rect.top + deltaY));
+
+        // Aplica a nova posição ao botão
+        botao.style.position = "absolute"; // Precisa estar absoluto para mover
+        botao.style.left = `${newX}px`;
+        botao.style.top = `${newY}px`;
+    });
+
+</script>
+
+
+</html>
