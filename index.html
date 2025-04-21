@@ -1,96 +1,449 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página com Botões</title>
+    <title>Questionário Personalizado</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            color: #333;
         }
 
-        body {
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .question:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .question p {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            margin-left: 15px;
+        }
+
+        .option {
+            margin: 2px 0;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Adicione hover para toda a área da opção */
+        .option:hover {
+            background-color: rgba(0, 153, 255, 0.797);
+        }
+
+        /* Efeito zebrado para as opções */
+        .option:nth-child(odd) {
+            background-color: rgba(100, 214, 255, 0.139);
+        }
+
+        .option:nth-child(even) {
+            background-color: rgba(24, 194, 255, 0.101);
+        }
+
+        /* Aumente a área clicável do radio */
+        input[type="radio"] {
+            /* mantém as propriedades existentes */
+            min-width: 18px;
+            min-height: 18px;
+            cursor: pointer;
+        }
+
+        /* Ajuste para garantir que o label ocupe todo o espaço restante */
+        label {
+            flex-grow: 1;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        label:hover {
+            background-color: #c5e8ffa2;
+            color: #2e69a4;
+        }
+
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #2980b9, #3498db);
+        }
+
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1em;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .error {
+            color: #e74c3c;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+            padding: 10px;
+            background-color: #fdecea;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);
+        }
+
+        .unanswered {
+            animation: pulse 1.5s infinite;
+            border-left: 4px solid #e74c3c !important;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.2);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .question {
+                padding: 15px;
+            }
+
+            button {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+
+        #amass {
+            transition: none !important;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b81, #ff4757);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .titulo {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            z-index: 1000;
+            color: white;
             text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .container {
-            display: flex;
-            gap: 10vw;
+        .error-message h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 1.5s infinite;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.6s;
+        .error-message p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            max-width: 600px;
         }
 
-        .btnsim {
-            background-color: #000000;
-            color: white;
+        .countdown {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        .btnsim:hover {
-            background-color: #25aa2b;
+        .error-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
         }
 
-        .btnnao {
-            background-color: #000000;
-            color: white;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-20px);
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="titulo">VOCÊ ME AMA???</div>
-    <div class="container">
-        <button class="btnsim">SIM</button>
-        <button class="btnnao">NÃO</button>
-    </div>
+    <h1>Questionário Personalizado</h1>
+    <form id="quiz">
+
+        <!-- PERGUNTA 1 -->
+        <div class="question" id="question1">
+            <p>O que eu prefiro?</p>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q1" id="q1a" value="a">
+                    <label for="q1a">Frio</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" id="q1b" value="b">
+                    <label for="q1b">Calor</label>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PERGUNTA 2 -->
+        <div class="question" id="question2">
+            <p>Qual meu esporte preferido?</p>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q2" id="q2a" value="a">
+                    <label for="q2a">Futebol</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" id="q2b" value="b">
+                    <label for="q2b">Jiu-Jitsu</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" id="q2c" value="c">
+                    <label for="q2c">Academia</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" id="q2d" value="d">
+                    <label for="q2d">Basquete</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 3 -->
+        <div class="question" id="question3">
+            <p>Qual a data do meu aniversário? (dia/mês)</p>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q3" id="q3a" value="a">
+                    <label for="q3a">01/12</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" id="q3b" value="b">
+                    <label for="q3b">12/01</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" id="q3c" value="c">
+                    <label for="q3c">12/12</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" id="q3d" value="d">
+                    <label for="q3d">01/11</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 4 -->
+        <div class="question" id="question4">
+            <p>O que eu mais gosto de fazer no tempo livre?</p>
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="q4" id="q4a" value="a">
+                    <label for="q4a">Ver minha namorada</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" id="q4b" value="b">
+                    <label for="q4b">Jogar</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" id="q4c" value="c">
+                    <label for="q4c">Tocar Guitarra</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" id="q4d" value="d">
+                    <label for="q4d">Dormir</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERGUNTA 5 -->
+        <div class="question" id="question5">
+            <p>(-Bônus-) Minha namorada vai me dar um beijo agora?</p>
+            <div class="options">
+                <div class="option" id="amass">
+                    <input type="radio" name="q5" id="q5a" value="a">
+                    <label for="q5a">Sim</label>
+                </div>
+                <div class="option" id="naoama">
+                    <input type="radio" name="q5" id="q5b" value="b">
+                    <label for="q5b">Não</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" onclick="validateQuiz()">Verificar Respostas</button>
+        <div id="result" style="display: none;"></div>
+        <div id="error" class="error" style="display: none;"></div>
+    </form>
+
+    <script>
+
+        function validateQuiz() {
+            const elementoErro = document.getElementById("error");
+            elementoErro.textContent = "";
+
+            // Remove destaque de perguntas não respondidas anterior
+            document.querySelectorAll('.question').forEach(q => {
+                q.classList.remove('unanswered');
+            });
+
+            let tudoRespondido = true;
+
+
+            // Verifica se todas as perguntas foram respondidas
+            for (let i = 1; i <= 5; i++) {
+                const nomePergunta = "q" + i;
+                const selecionada = document.querySelector(`input[name="${nomePergunta}"]:checked`);
+
+                if (!selecionada) {
+                    tudoRespondido = false;
+                    // Destaca a pergunta não respondida
+                    document.getElementById(`question${i}`).classList.add('unanswered');
+                }
+            }
+
+            if (!tudoRespondido) {
+                elementoErro.style.display = ''
+                elementoErro.textContent = "Por favor, responda todas as perguntas antes de verificar.";
+                return;
+            }
+
+            // Se todas foram respondidas, verifica as respostas
+            checkAnswers();
+        }
+
+        function checkAnswers() {
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = `
+        <div class="error-message">
+            <div class="error-icon">⚠️</div>
+            <h1>VIRE PARA TRÁS!</h1>
+            <p>De preferência, dê um beijo no seu amor ❤</p>
+
+            <div class="countdown" id="countdown">10</div>
+            <p>SEUS RESULTADOS ESTÃO SENDO CALCULADOS!!</p>
+        </div>
+    `;
+
+            // Contagem regressiva
+            let seconds = 10;
+            const countdown = setInterval(() => {
+                seconds--;
+                document.getElementById('countdown').textContent = seconds;
+
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    window.location.pathname = '/proposta.html';
+                }
+            }, 1000);
+
+            // Opcional: Botão de cancelamento (se quiser adicionar)
+            // document.body.innerHTML += `<button onclick="document.body.innerHTML = originalContent">Cancelar</button>`;
+        }
+
+        function carregaListen() {
+            const naoAmaOption = document.getElementById('naoama');
+
+
+            naoAmaOption.addEventListener('mouseenter', () => {
+                document.getElementById('amass').style.marginBottom = '50px'
+                naoAmaOption.style.display = 'none';
+            });
+
+            // Adiciona o evento mouseleave no container da pergunta
+            document.getElementById('question5').addEventListener('mouseleave', () => {
+                naoAmaOption.style.display = '';
+                document.getElementById('amass').style.marginBottom = '0px'
+            });
+        }
+
+        window.onload = () => {
+            carregaListen();
+        };
+    </script>
 </body>
-<script>
-    document.querySelector('.btnsim').addEventListener('click', () => {window.alert('aaaaaaaaaaaaaaaaaaa')})
-    const botao = document.querySelector(".btnnao");
-
-    botao.addEventListener("mouseenter", () => {
-        // Obtém a posição atual do botão
-        const rect = botao.getBoundingClientRect();
-
-        // Define a distância máxima que o botão pode se mover
-        const deslocamentoMaximo = 150; // Pode ajustar esse valor
-
-        // Gera deslocamentos aleatórios dentro do limite definido
-        let deltaX = (Math.random() * (deslocamentoMaximo * 2)) - deslocamentoMaximo;
-        let deltaY = (Math.random() * (deslocamentoMaximo * 2)) - deslocamentoMaximo;
-
-        // Calcula nova posição dentro da tela, evitando que saia completamente
-        let newX = Math.min(window.innerWidth - rect.width, Math.max(0, rect.left + deltaX));
-        let newY = Math.min(window.innerHeight - rect.height, Math.max(0, rect.top + deltaY));
-
-        // Aplica a nova posição ao botão
-        botao.style.position = "absolute"; // Precisa estar absoluto para mover
-        botao.style.left = `${newX}px`;
-        botao.style.top = `${newY}px`;
-    });
-
-</script>
-
 
 </html>
